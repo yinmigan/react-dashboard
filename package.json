@@ -10,10 +10,10 @@
     "d3-interpolate": "^3.0.1",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
-    "react": ">=16.8.0",
+    "react": "^17.0.0",
     "react-bootstrap": "2.4.0",
     "react-chartist": "^0.14.4",
-    "react-dom": ">=16.8.0",
+    "react-dom": "^17.0.0",
     "react-liquid-gauge": "^1.2.4",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
@@ -34,10 +34,6 @@
     "compile:scss": "sass src/assets/scss/light-bootstrap-dashboard-pro-react.scss src/assets/css/light-bootstrap-dashboard-pro-react.css",
     "minify:scss": "sass src/assets/scss/light-bootstrap-dashboard-pro-react.scss src/assets/css/light-bootstrap-dashboard-pro-react.min.css --style compressed",
     "build:scss": "npm run compile:scss && npm run minify:scss"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
   },
   "browserslist": {
     "production": [
