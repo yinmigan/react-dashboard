@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Col, Row, Container } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import ChartistGraph from "react-chartist";
 
 class WaterLevelChart extends Component {
@@ -13,6 +13,21 @@ class WaterLevelChart extends Component {
     this.fetchWaterLevels();
   }
 
+  // Helper function to format time labels for full hours only
+  formatTimeLabel = (dateStr) => {
+    const date = new Date(dateStr);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Only add label if it's the start of the hour (e.g., 2:00, 3:00, etc.)
+    if (minutes === 0) {
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 === 0 ? 12 : hours % 12;  // 12-hour format
+      return `${formattedHours} ${period}`;
+    }
+    return '';  // Return empty label for non-hourly times
+  };
+
   fetchWaterLevels = async () => {
     try {
       const response = await fetch(
@@ -20,13 +35,16 @@ class WaterLevelChart extends Component {
       );
       const data = await response.json();
 
-      // Assuming the API returns an array of objects with time and waterLevel properties
-      const labels = data.map((entry) => entry.date);
-      const series = [data.map((entry) => entry.level)];
+      // Generate labels based on the timestamps (full hours only)
+      const timeLabels = data.map((entry) => this.formatTimeLabel(entry.date));
+      const waterLevels = data.map((entry) => parseFloat(entry.level));
+
+      const limitedTimeLabels = timeLabels.slice(-40);
+      const limitedWaterLevels = waterLevels.slice(-40);
 
       this.setState({
-        labels,
-        series,
+        labels: limitedTimeLabels,
+        series: [limitedWaterLevels],  // Ensure all water level data is included
         lastUpdated: new Date(),
       });
     } catch (error) {
@@ -42,60 +60,66 @@ class WaterLevelChart extends Component {
       : "Loading...";
 
     return (
-        <Card.Body>
+      <Card.Body>
         <div className="ct-chart" id="chartHours">
-            <ChartistGraph
-            data={{
-                labels: labels,
-                series: series,
-            }}
-            type="Line"
-            options={{
-                low: 0,
-                high: 90, // Adjust based on your water level range
-                showArea: false,
-                height: "250px",
+        <ChartistGraph
+          data={{
+            labels: labels,  // Full-hour labels only
+            series: series,
+          }}
+          type="Line"
+          options={{
+            low: 0,
+            high: 90,  // Adjust based on your water level range
+            showArea: false,
+            height: "250px",
+            axisX: {
+              showGrid: false,
+              labelInterpolationFnc: (value, index) => {
+                // Show every 2nd label to reduce overlap
+                return index % 2 === 0 ? value : null;
+              },
+            },
+            axisY: {
+              onlyInteger: true,
+            },
+            lineSmooth: false,
+            showLine: true,
+            showPoint: true,
+            fullWidth: true,
+            chartPadding: {
+              right: 30,  // Reduced right padding to minimize gap
+              left: 10,   // Adjust padding for better fit
+            },
+          }}
+          responsiveOptions={[
+            [
+              "screen and (max-width: 640px)",
+              {
                 axisX: {
-                showGrid: false,
+                  labelInterpolationFnc: (value) => {
+                    // Display every 4th label on small screens to avoid overlap
+                    return value.length > 0 && value[0];
+                  },
                 },
-                lineSmooth: false,
-                showLine: true,
-                showPoint: true,
-                fullWidth: true,
                 chartPadding: {
-                right: 50,
+                  right: 10, // Further reduce padding for small screens
                 },
-            }}
-            responsiveOptions={[
-                [
-                "screen and (max-width: 640px)",
-                {
-                    axisX: {
-                    labelInterpolationFnc: function (value) {
-                        return value[0];
-                    },
-                    },
-                },
-                ],
-            ]}
-            />
+              },
+            ],
+          ]}
+        />
         </div>
         <Card.Footer>
-            <div className="legend">
-                <i className="fas fa-circle text-info"></i>
-                Water Level 
-                {/* <i className="fas fa-circle text-warning"></i>
-                Warning <i className="fas fa-circle text-danger"></i>
-                Danger */}
-            </div>
-            <hr></hr>
-            <div className="stats">
-                <i className="fas fa-history"></i>
-                Updated: {lastUpdatedFormatted}
-            </div>
+          <div className="legend">
+            <i className="fas fa-circle text-info"></i> Water Level
+          </div>
+          <hr />
+          <div className="stats">
+            <i className="fas fa-history"></i> Updated: {lastUpdatedFormatted}
+          </div>
         </Card.Footer>
-        </Card.Body>
-        
+      </Card.Body>
     );
   }
 }
