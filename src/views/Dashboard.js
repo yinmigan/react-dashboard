@@ -3,6 +3,7 @@ import ChartistGraph from "react-chartist";
 import WaterLevelGauge from "./WaterLevelGauge";
 import Weatherboard from "./WeatherCard";
 import WaterLevelChart from "./WaterLevelChart";
+import ChatCard from "./ChatCard";
 // react-bootstrap components
 import {
   Badge,
@@ -37,10 +38,10 @@ function Dashboard() {
           <Col md="8">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Water Level History</Card.Title>
-                <p className="card-category">Water Level Trend</p>
+                <Card.Title as="h4">Flood Detector Bot</Card.Title>
+                <p className="card-category">Ask any information related to the water level</p>
               </Card.Header>
-              <WaterLevelChart />
+              <ChatCard />
             </Card>
           </Col>
         </Row>

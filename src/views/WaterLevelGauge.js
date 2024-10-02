@@ -26,6 +26,10 @@ class WaterLevelGauge extends Component {
         });
       } else {
         console.error("Invalid response data:", data);
+        this.setState({ 
+          value: 0, 
+          lastUpdated: new Date() // Store the current date and time
+        });
       }
     } catch (error) {
       console.error("Error fetching water level:", error);
