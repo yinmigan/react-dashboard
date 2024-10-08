@@ -27,7 +27,7 @@ import Upgrade from "views/Upgrade.js";
 const dashboardRoutes = [
   {
     path: "/dashboard",
-    name: "Efficient AI-based Real-time Water Level Detection using NodeMCU",
+    name: "Dashboard",
     icon: "nc-icon nc-chart-pie-35",
     component: Dashboard,
     layout: "/admin"
