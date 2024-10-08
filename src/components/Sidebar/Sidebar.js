@@ -29,7 +29,7 @@ function Sidebar({ color, image, routes }) {
             </div>
           </a>
           <a className="simple-text">
-            Flood Detection
+            EARWN
           </a>
         </div>
         <Nav>
